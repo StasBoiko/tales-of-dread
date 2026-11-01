@@ -1,0 +1,304 @@
+:root {
+  --font-title: 'Pirata One', 'MedievalSharp', cursive;
+  --font-body: 'Cinzel', serif;
+  --font-chalk: 'Caveat', cursive;
+
+  --candle-light-x: 50%;
+  --candle-light-y: 52%;
+  --candle-radius: 46vw;
+  --candle-color: rgba(255, 175, 60, 0.22);
+  --candle-core: rgba(255, 230, 160, 0.45);
+
+  --wood-base: #140d09;
+  --wood-grain: #1d140e;
+  --parchment: #e2c99f;
+  --blood-red: #8a1414;
+  --ember-glow: #ff4500;
+  --ink-black: #080709;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #050404;
+  color: #d8c8b4;
+  font-family: var(--font-body);
+  font-feature-settings: "zero" 1;
+  font-variant-numeric: slashed-zero tabular-nums;
+}
+
+#app {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Tavern Table Environment with dynamic candle flickering */
+.tavern-table {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  transition: filter 0.8s ease;
+}
+
+/* Dynamic Radial Candlelight Overlay */
+.candle-lighting {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  background: radial-gradient(
+    circle at var(--candle-light-x) var(--candle-light-y),
+    var(--candle-core) 0%,
+    var(--candle-color) 22%,
+    rgba(15, 10, 8, 0.72) 48%,
+    rgba(4, 3, 4, 0.96) 72%,
+    #020102 100%
+  );
+  animation: candleFlicker 3.2s infinite ease-in-out;
+  mix-blend-mode: hard-light;
+  transition: --candle-radius 2s ease, opacity 1s ease;
+}
+
+/* Wax Inactivity Choke: when idle > 8s */
+.candle-choked {
+  background: radial-gradient(
+    circle at var(--candle-light-x) var(--candle-light-y),
+    rgba(255, 120, 30, 0.35) 0%,
+    rgba(180, 50, 10, 0.15) 12%,
+    rgba(6, 4, 5, 0.95) 28%,
+    #020102 60%
+  ) !important;
+  animation: waxChokePulse 1.8s infinite alternate ease-in-out !important;
+}
+
+/* Creeping Claw Shadows on idle choke */
+.creeping-claws {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+  background-image: 
+    radial-gradient(ellipse at 10% 40%, rgba(0, 0, 0, 0.95) 0%, transparent 60%),
+    radial-gradient(ellipse at 90% 40%, rgba(0, 0, 0, 0.95) 0%, transparent 60%);
+}
+
+.creeping-claws.visible {
+  opacity: 0.85;
+}
+
+/* Table Themes based on Boss */
+.theme-pine_boards {
+  background-color: #17110c;
+  background-image: 
+    repeating-linear-gradient(0deg, #120d09 0px, #1a130d 4px, #16100b 8px, #0e0906 120px),
+    radial-gradient(ellipse at 30% 70%, rgba(20, 35, 15, 0.25) 0%, transparent 50%),
+    radial-gradient(circle at 75% 35%, rgba(180, 100, 20, 0.18) 0%, transparent 40px);
+}
+
+.theme-paper_walls {
+  background-color: #110f13;
+  background-image: 
+    linear-gradient(45deg, rgba(230, 215, 185, 0.04) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(230, 215, 185, 0.04) 25%, transparent 25%),
+    radial-gradient(circle at 65% 60%, rgba(10, 5, 20, 0.9) 0%, transparent 80px),
+    radial-gradient(circle at 25% 45%, rgba(5, 5, 10, 0.85) 0%, transparent 60px);
+}
+
+.theme-charred_oak {
+  background-color: #0c0706;
+  background-image: 
+    repeating-linear-gradient(90deg, #0a0504 0px, #160c08 20px, #080302 45px, #120805 140px),
+    radial-gradient(ellipse at 50% 60%, rgba(255, 60, 0, 0.18) 0%, transparent 55%),
+    radial-gradient(circle at 20% 80%, rgba(255, 90, 0, 0.12) 0%, transparent 40px);
+}
+
+/* Animations */
+@keyframes candleFlicker {
+  0% { transform: scale(1) translate(0, 0); opacity: 0.96; }
+  25% { transform: scale(1.02) translate(-1px, 2px); opacity: 1; }
+  50% { transform: scale(0.98) translate(2px, -1px); opacity: 0.94; }
+  75% { transform: scale(1.01) translate(-2px, -1px); opacity: 0.98; }
+  100% { transform: scale(1) translate(0, 0); opacity: 0.96; }
+}
+
+@keyframes waxChokePulse {
+  0% { transform: scale(0.96); opacity: 0.9; }
+  100% { transform: scale(1.04); opacity: 1; }
+}
+
+/* Screen Shake for Boss 3 (>21 bust) */
+.shake-screen {
+  animation: violentShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes violentShake {
+  10%, 90% { transform: translate3d(-6px, 4px, 0) rotate(-1deg); }
+  20%, 80% { transform: translate3d(8px, -6px, 0) rotate(1.5deg); }
+  30%, 50%, 70% { transform: translate3d(-8px, 6px, 0) rotate(-2deg); }
+  40%, 60% { transform: translate3d(6px, -4px, 0) rotate(1deg); }
+}
+
+/* Radial Shockwave for 21 Crit */
+.crit-shockwave {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 50;
+  border: 4px solid #6cd7ff;
+  box-shadow: 0 0 40px #38a5ff, inset 0 0 30px #a4e5ff;
+  animation: shockwaveExpand 0.7s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes shockwaveExpand {
+  0% { width: 10px; height: 10px; opacity: 1; }
+  100% { width: 140vmax; height: 140vmax; opacity: 0; border-width: 1px; }
+}
+
+/* Screen Cracks for Boss 2 hit */
+.screen-cracks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  background-image: radial-gradient(circle, transparent 20%, rgba(255, 255, 255, 0.12) 21%, transparent 22%),
+    linear-gradient(45deg, transparent 49%, rgba(255, 255, 255, 0.2) 50%, transparent 51%),
+    linear-gradient(-35deg, transparent 48%, rgba(255, 255, 255, 0.15) 50%, transparent 52%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.screen-cracks.active {
+  opacity: 1;
+}
+
+/* Blinding Light for Boss 3 Death / Victory */
+.blinding-flash {
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  pointer-events: none;
+  z-index: 99;
+  opacity: 0;
+  transition: opacity 1.8s ease-in-out;
+}
+
+.blinding-flash.active {
+  opacity: 1;
+}
+
+/* Symmetrical 3-Column Arena Grid */
+.tavern-arena-grid {
+  display: grid;
+  grid-template-columns: 280px minmax(560px, 1fr) 280px;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 10;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.desktop-column {
+  width: 280px;
+  min-width: 280px;
+  max-width: 280px;
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.arena-center-stage {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  padding: 0 8px;
+}
+
+/* Chalk Text Styling */
+.chalk-text {
+  font-family: var(--font-chalk);
+  color: #f0ede5;
+  text-shadow: 
+    0 0 2px rgba(255, 255, 255, 0.8),
+    1px 1px 1px rgba(0, 0, 0, 0.9),
+    -1px -1px 2px rgba(240, 240, 240, 0.4);
+  letter-spacing: 2px;
+}
+
+/* Large Bold Gothic Buttons */
+.dread-btn {
+  background: linear-gradient(180deg, #321e15 0%, #1a0f0a 100%);
+  border: 2px solid #6b432a;
+  color: #faebd7;
+  font-family: var(--font-title);
+  font-size: 1.5rem; /* ~24px */
+  letter-spacing: 2px;
+  padding: 12px 32px;
+  cursor: pointer;
+  border-radius: 6px;
+  box-shadow: 
+    0 6px 18px rgba(0, 0, 0, 0.9),
+    inset 0 1px 2px rgba(255, 255, 255, 0.15);
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.4, 1);
+  position: relative;
+  overflow: hidden;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.95);
+}
+
+.dread-btn:hover:not(:disabled) {
+  background: linear-gradient(180deg, #4d2e1f 0%, #29150d 100%);
+  border-color: #d1874f;
+  color: #ffffff;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 
+    0 10px 24px rgba(0, 0, 0, 0.95),
+    0 0 18px rgba(255, 160, 50, 0.4);
+}
+
+.dread-btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.9);
+}
+
+.dread-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(0.8);
+}
+
+.dread-btn-danger {
+  border-color: #992424;
+}
+
+.dread-btn-danger:hover:not(:disabled) {
+  border-color: #f24e4e;
+  box-shadow: 0 0 22px rgba(230, 40, 40, 0.5);
+}
