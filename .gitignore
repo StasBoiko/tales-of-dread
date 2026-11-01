@@ -1,0 +1,12 @@
+/bin/
+/vendor/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+.DS_Store
+.env
+.env.local
+GEMINI.md
+Grimoras Crypt(small).mp3
