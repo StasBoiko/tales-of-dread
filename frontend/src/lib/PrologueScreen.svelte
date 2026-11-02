@@ -1,17 +1,18 @@
 <script>
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { audioEngine } from './audioEngine.js';
-  import { setLang, getLang, t, langStore } from '../i18n/index.js';
+  import { setLang, t, langStore } from '../i18n/index.js';
 
   const dispatch = createEventDispatcher();
 
-  const storyLines = [
+  // Reactive storyLines based on current language
+  let currentLang = $langStore;
+  let storyLines = $derived([
     t('prologue.intro1'),
     t('prologue.intro2'),
     t('prologue.intro3')
-  ];
+  ]);
 
-  let currentLineIndex = 0;
   let displayedText = ['', '', ''];
   let isTyping = true;
   let typeInterval = null;
@@ -19,9 +20,6 @@
   let isLightningActive = false;
   let lightningTimer = null;
   let prologueRestartRequested = false;
-
-  // Reactive current language from store
-  let currentLang = $langStore;
 
   onMount(() => {
     // Ambient rain during prologue
