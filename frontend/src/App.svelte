@@ -1,7 +1,6 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import { audioEngine } from './lib/audioEngine.js';
-  import LanguageSwitch from './lib/LanguageSwitch.svelte';
   import CandleBar from './lib/CandleBar.svelte';
   import ChalkScore from './lib/ChalkScore.svelte';
   import BossPortrait from './lib/BossPortrait.svelte';
@@ -319,7 +318,6 @@
       </div>
 
       <VolumeControl />
-      <LanguageSwitch />
     </div>
   {/if}
 
