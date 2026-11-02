@@ -2,9 +2,9 @@
   // InventoryScroll: Right column ancient relic vault symmetrical to Rules
   export let artifacts = [];
 
-  $: medallion = artifacts && artifacts[0];
-  $: trophy1 = artifacts && artifacts[1];
-  $: trophy2 = artifacts && artifacts[2];
+  $: medallion = artifacts?.[0];
+  $: trophy1 = artifacts?.[1];
+  $: trophy2 = artifacts?.[2];
 </script>
 
 <aside class="scroll-column inventory-scroll-column" aria-label="Полка реликвий">

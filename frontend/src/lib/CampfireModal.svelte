@@ -22,8 +22,13 @@
     '«Сквозь руины корчмы веет ледяной бездной... Пора положить конец этому кошмару.»'
   ];
 
-  $: activeMonologue = monologues[bossIndex] || monologues[0];
-  $: isCandlesFull = !isNightmare && playerCandles >= maxCandles;
+  function getActiveMonologue() {
+    return monologues[bossIndex] || monologues[0];
+  }
+  
+  function isCandlesFull() {
+    return !isNightmare && playerCandles >= maxCandles;
+  }
 
   onMount(() => {
     // Duck music and activate crackling fire + crickets
@@ -285,7 +290,7 @@
     <!-- Narrative monologue from the wanderer -->
     <div class="hero-monologue-bubble">
       <span class="quill-icon">📜</span>
-      <p class="monologue-text">{activeMonologue}</p>
+      <p class="monologue-text">{getActiveMonologue()}</p>
     </div>
 
     <!-- Interactive Respite Panel with 15s Progress Bar -->
@@ -297,8 +302,8 @@
           <button 
             type="button" 
             class="respite-choice-btn cook-btn"
-            class:disabled={isCandlesFull}
-            disabled={isCandlesFull}
+            class:disabled={isCandlesFull()}
+            disabled={isCandlesFull()}
             on:click={startCookingStew}
           >
             <span class="choice-icon">🍲</span>
@@ -307,7 +312,7 @@
                 {isCandlesFull ? 'Свечи полны (Лечение не требуется)' : 'Сварить похлебку / Набраться сил'}
               </span>
               <span class="choice-desc">
-                {#if isCandlesFull}
+                {#if isCandlesFull()}
                   Пламя всех твоих свечей горит ярко — отдых у костра не требуется.
                 {:else if isNightmare}
                   15 секунд отдыха у костра защищают твои свечи от угасания

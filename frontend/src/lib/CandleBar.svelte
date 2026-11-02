@@ -6,12 +6,16 @@
   export let maxCandles = 5;
 
   let prevCandles = candles;
+  let isCandleHissing = false;
 
-  $: if (candles < prevCandles) {
-    audioEngine.playCandleHiss();
-    prevCandles = candles;
-  } else if (candles > prevCandles) {
-    prevCandles = candles;
+  $: {
+    if (candles < prevCandles) {
+      isCandleHissing = true;
+      audioEngine.playCandleHiss();
+      prevCandles = candles;
+    } else if (candles > prevCandles) {
+      prevCandles = candles;
+    }
   }
 </script>
 

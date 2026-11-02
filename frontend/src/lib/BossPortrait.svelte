@@ -39,50 +39,56 @@
 
   // Watch HP change
   // Watch HP change
-  $: if (boss && boss.currentHp < prevHP) {
-    isHit = true;
-    audioEngine.playBossStrike();
-    if (boss.currentHp <= 0) {
-      if (boss.id === 'the_lanterns') {
-        audioEngine.playGlassShatter();
+  $: {
+    if (boss && boss.currentHp < prevHP) {
+      isHit = true;
+      audioEngine.playBossStrike();
+      if (boss.currentHp <= 0) {
+        if (boss.id === 'the_lanterns') {
+          audioEngine.playGlassShatter();
+        } else {
+          audioEngine.playBossStrike();
+        }
+        const deathQuotes = {
+          the_lanterns: "Фонарь разбился... свет тонет в тине...",
+          kingdom_of: "Стены рушатся... рукописи горят... свобода?!",
+          let_it_go: "Пламя Бездны... ты поглотил его... или оно тебя?!"
+        };
+        triggerQuote(deathQuotes[boss.id] || "Это еще не конец...", 3500);
       } else {
-        audioEngine.playBossStrike();
+        const bossLines = BOSS_QUOTES.bossSpecific[boss.id];
+        if (bossLines && bossLines.hitReact) {
+          triggerQuote(bossLines.hitReact, 2600);
+        }
       }
-      const deathQuotes = {
-        the_lanterns: "Фонарь разбился... свет тонет в тине...",
-        kingdom_of: "Стены рушатся... рукописи горят... свобода?!",
-        let_it_go: "Пламя Бездны... ты поглотил его... или оно тебя?!"
-      };
-      triggerQuote(deathQuotes[boss.id] || "Это еще не конец...", 3500);
-    } else {
-      const bossLines = BOSS_QUOTES.bossSpecific[boss.id];
-      if (bossLines && bossLines.hitReact) {
-        triggerQuote(bossLines.hitReact, 2600);
-      }
+      setTimeout(() => {
+        isHit = false;
+      }, 600);
+      prevHP = boss.currentHp;
+    } else if (boss) {
+      prevHP = boss.currentHp;
     }
-    setTimeout(() => {
-      isHit = false;
-    }, 600);
-    prevHP = boss.currentHp;
-  } else if (boss) {
-    prevHP = boss.currentHp;
   }
 
   // Watch Player Score changes for trigger lines
-  $: if (playerScore !== prevPlayerScore) {
-    if (playerScore === 21) {
-      triggerQuote(getRandomQuote('crit21'), 4200);
-    } else if (playerScore > 21) {
-      triggerQuote(getRandomQuote('bust'), 4200);
-    } else if (playerScore >= 18 && playerScore <= 20 && playerScore > prevPlayerScore) {
-      triggerQuote(getRandomQuote('dangerHit'), 3600);
+  $: {
+    if (playerScore !== prevPlayerScore) {
+      if (playerScore === 21) {
+        triggerQuote(getRandomQuote('crit21'), 4200);
+      } else if (playerScore > 21) {
+        triggerQuote(getRandomQuote('bust'), 4200);
+      } else if (playerScore >= 18 && playerScore <= 20 && playerScore > prevPlayerScore) {
+        triggerQuote(getRandomQuote('dangerHit'), 3600);
+      }
+      prevPlayerScore = playerScore;
     }
-    prevPlayerScore = playerScore;
   }
 
   // Watch Idle trigger
-  $: if (isIdleChoked) {
-    triggerQuote(getRandomQuote('idle'), 4000);
+  $: {
+    if (isIdleChoked) {
+      triggerQuote(getRandomQuote('idle'), 4000);
+    }
   }
 
   function handleMouseMove(e) {

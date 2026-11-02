@@ -35,7 +35,9 @@
     6: 'rotateX(180deg) rotateY(0deg)',
   };
 
-  $: rotationStyle = faceRotations[value] || faceRotations[1];
+  function getRotationStyle() {
+  return faceRotations[value] || faceRotations[1];
+}
 </script>
 
 <div 
@@ -75,7 +77,7 @@
   {:else}
     <div 
       class="dice-cube" 
-      style="transform: {rolling ? 'rotateX(720deg) rotateY(1080deg)' : rotationStyle};"
+      style="transform: {rolling ? 'rotateX(720deg) rotateY(1080deg)' : getRotationStyle()};"
     >
       <!-- Face 1 (Front) -->
       <div class="dice-face face-1">

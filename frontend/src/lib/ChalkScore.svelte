@@ -8,13 +8,15 @@
   let prevScore = score;
   let isScratching = false;
 
-  $: if (!isObscured && score !== prevScore) {
-    isScratching = true;
-    audioEngine.playChalkScratch();
-    setTimeout(() => {
-      prevScore = score;
-      isScratching = false;
-    }, 280);
+  $: {
+    if (!isObscured && score !== prevScore) {
+      isScratching = true;
+      audioEngine.playChalkScratch();
+      setTimeout(() => {
+        prevScore = score;
+        isScratching = false;
+      }, 280);
+    }
   }
 </script>
 

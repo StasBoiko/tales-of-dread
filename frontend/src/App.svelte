@@ -74,46 +74,56 @@
   }
 
   // Audio & effect synchronization on state updates
-  $: if (state && state.currentBoss) {
-    if (state.phase !== 'title' && state.phase !== 'prologue' && !showPrologue) {
-      audioEngine.startPlaylist();
+  $: {
+    if (state && state.currentBoss) {
+      if (state.phase !== 'title' && state.phase !== 'prologue' && !showPrologue) {
+        audioEngine.startPlaylist();
+      }
+      audioEngine.setDangerState(state.playerScore);
     }
-    audioEngine.setDangerState(state.playerScore);
   }
 
   // Tinnitus on bust (>21 points)
-  $: if (state && state.playerScore > 21 && prevPlayerScore <= 21) {
-    audioEngine.playTinnitus();
-  }
-  $: prevPlayerScore = state ? state.playerScore : 0;
-
-  $: if (state && state.isCrit) {
-    activeCritShockwave = true;
-    setTimeout(() => {
-      activeCritShockwave = false;
-    }, 750);
+  $: {
+    if (state && state.playerScore > 21 && prevPlayerScore <= 21) {
+      audioEngine.playTinnitus();
+    }
+    prevPlayerScore = state ? state.playerScore : 0;
   }
 
-  $: if (state && state.currentBoss && state.currentBoss.id === 'kingdom_of' && state.lastDamageDealt > 0) {
-    screenCracksActive = true;
-    setTimeout(() => {
-      screenCracksActive = false;
-    }, 600);
+  $: {
+    if (state && state.isCrit) {
+      activeCritShockwave = true;
+      setTimeout(() => {
+        activeCritShockwave = false;
+      }, 750);
+    }
+  }
+
+  $: {
+    if (state && state.currentBoss && state.currentBoss.id === 'kingdom_of' && state.lastDamageDealt > 0) {
+      screenCracksActive = true;
+      setTimeout(() => {
+        screenCracksActive = false;
+      }, 600);
+    }
   }
 
   let activeMedallionFlash = false;
   let medallionBannerVisible = false;
 
-  $: if (state && state.medallionSavedLife) {
-    audioEngine.playMedallionSave();
-    activeMedallionFlash = true;
-    medallionBannerVisible = true;
-    setTimeout(() => {
-      activeMedallionFlash = false;
-    }, 1200);
-    setTimeout(() => {
-      medallionBannerVisible = false;
-    }, 4500);
+  $: {
+    if (state && state.medallionSavedLife) {
+      audioEngine.playMedallionSave();
+      activeMedallionFlash = true;
+      medallionBannerVisible = true;
+      setTimeout(() => {
+        activeMedallionFlash = false;
+      }, 1200);
+      setTimeout(() => {
+        medallionBannerVisible = false;
+      }, 4500);
+    }
   }
 
   // API calls

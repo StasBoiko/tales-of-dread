@@ -27,14 +27,16 @@
   let showBloodTax = false;
   let prevResolved = false;
 
-  $: if (part2 && part2.round_resolved && !prevResolved && part2.round_outcome === 'tie') {
-    audioEngine.playBloodPayment();
-    showBloodTax = true;
-    setTimeout(() => {
-      showBloodTax = false;
-    }, 2400);
+  $: {
+    if (part2 && part2.round_resolved && !prevResolved && part2.round_outcome === 'tie') {
+      audioEngine.playBloodPayment();
+      showBloodTax = true;
+      setTimeout(() => {
+        showBloodTax = false;
+      }, 2400);
+    }
+    prevResolved = part2 ? part2.round_resolved : false;
   }
-  $: prevResolved = part2 ? part2.round_resolved : false;
 
   onMount(() => {
     audioEngine.playDiceTumble();

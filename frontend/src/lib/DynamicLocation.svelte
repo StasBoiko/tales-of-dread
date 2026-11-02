@@ -2,8 +2,6 @@
   import { getLocationConfig } from './locationThemes.js';
 
   export let bossId = 'the_lanterns';
-
-  $: config = getLocationConfig(bossId);
 </script>
 
 <div class="dynamic-location-root loc-{bossId}">
