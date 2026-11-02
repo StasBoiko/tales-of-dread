@@ -1,13 +1,14 @@
 <script>
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { audioEngine } from './audioEngine.js';
+  import { setLang, getLang, t } from '../i18n/index.js';
 
   const dispatch = createEventDispatcher();
 
   const storyLines = [
-    'Они забрали Алёну на исходе осени. Без крика. Без следов. Лишь серебряный медальон остался в холодной дорожной пыли.',
-    'Слухи вели в Проклятую Корчму на краю топей. Говорят, здешний хозяин не берет золота — он играет на годы, память и жизненную силу.',
-    'У меня осталось пять свечей. Когда догорит последняя — я забуду ее лицо навсегда.'
+    t('prologue.intro1'),
+    t('prologue.intro2'),
+    t('prologue.intro3')
   ];
 
   let currentLineIndex = 0;
@@ -17,6 +18,7 @@
   let charIndex = 0;
   let isLightningActive = false;
   let lightningTimer = null;
+  let prologueRestartRequested = false;
 
   onMount(() => {
     // Ambient rain during prologue
@@ -30,6 +32,15 @@
     if (lightningTimer) clearTimeout(lightningTimer);
     audioEngine.stopRainAmbience();
   });
+
+  // Restart prologue from beginning
+  function restartPrologue() {
+    currentLineIndex = 0;
+    displayedText = ['', '', ''];
+    charIndex = 0;
+    isTyping = true;
+    typeNextChar();
+  }
 
   function startTypewriter() {
     charIndex = 0;
@@ -88,6 +99,13 @@
     // Synchronously initiate audio playback immediately inside user gesture
     audioEngine.startMainMusic();
     dispatch('enter');
+  }
+
+  function handleLangChange(newLang) {
+    if (setLang(newLang)) {
+      restartPrologue();
+      dispatch('languageChanged', newLang);
+    }
   }
 </script>
 
@@ -243,6 +261,22 @@
 
   <!-- Narrative Section with 1.5x Larger Candle Badge and Centered Action Button -->
   <div class="narrative-container">
+    <!-- Language Switch (top-right of narrative) -->
+    <div class="prologue-lang-switch">
+      <button
+        class="lang-btn"
+        class:active={getLang() === 'ru'}
+        onclick={() => handleLangChange('ru')}
+        title="Русский"
+      >RU</button>
+      <button
+        class="lang-btn"
+        class:active={getLang() === 'en'}
+        onclick={() => handleLangChange('en')}
+        title="English"
+      >EN</button>
+    </div>
+
     <!-- Candle Badge: 1.5x Larger and High Contrast -->
     <div class="candle-count-badge">
       <span class="candle-flame-icon">🕯️</span>
@@ -263,18 +297,18 @@
     <!-- Actions Area: Skip on side, Centered Big Enter Button -->
     <div class="actions-wrapper">
       {#if isTyping}
-        <button class="skip-btn" on:click={skipTypewriter}>
-          Пропустить титры ⏩
+        <button class="skip-btn" onclick={skipTypewriter}>
+          {t('prologue.skip')}
         </button>
       {/if}
 
       <!-- Clean Centered Button without icons above text -->
       <button 
         class="enter-threshold-btn" 
-        on:click={handleEnterTavern}
+        onclick={handleEnterTavern}
         class:glow-pulse={!isTyping}
       >
-        ВОЙТИ В ПРОКЛЯТУЮ КОРЧМУ
+        {t('prologue.enter')}
       </button>
     </div>
   </div>
