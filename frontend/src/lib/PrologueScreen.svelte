@@ -5,13 +5,18 @@
 
   const dispatch = createEventDispatcher();
 
-  // Reactive storyLines based on current language
+  // Reactive current language from store
   let currentLang = $langStore;
-  let storyLines = $derived([
-    t('prologue.intro1'),
-    t('prologue.intro2'),
-    t('prologue.intro3')
-  ]);
+
+  let storyLines = [];
+
+  function updateStoryLines() {
+    storyLines = [
+      t('prologue.intro1'),
+      t('prologue.intro2'),
+      t('prologue.intro3')
+    ];
+  }
 
   let currentLineIndex = 0;
   let displayedText = ['', '', ''];
@@ -23,6 +28,7 @@
   let prologueRestartRequested = false;
 
   onMount(() => {
+    updateStoryLines();
     // Ambient rain during prologue
     audioEngine.startRainAmbience();
     startTypewriter();
@@ -37,6 +43,7 @@
 
   // Restart prologue from beginning
   function restartPrologue() {
+    updateStoryLines();
     currentLineIndex = 0;
     displayedText = ['', '', ''];
     charIndex = 0;
