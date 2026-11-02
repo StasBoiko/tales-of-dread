@@ -1,7 +1,7 @@
 <script>
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { audioEngine } from './audioEngine.js';
-  import { setLang, getLang, t } from '../i18n/index.js';
+  import { setLang, getLang, t, langStore } from '../i18n/index.js';
 
   const dispatch = createEventDispatcher();
 
@@ -19,6 +19,9 @@
   let isLightningActive = false;
   let lightningTimer = null;
   let prologueRestartRequested = false;
+
+  // Reactive current language from store
+  let currentLang = $langStore;
 
   onMount(() => {
     // Ambient rain during prologue
@@ -586,6 +589,64 @@
     50% {
       border-color: #ffbf66;
       box-shadow: 0 4px 26px rgba(255, 175, 60, 0.5);
+    }
+  }
+
+  .prologue-lang-switch {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 60;
+    display: flex;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid rgba(200, 136, 56, 0.3);
+  }
+
+  .lang-btn {
+    min-width: 38px;
+    height: 36px;
+    background: linear-gradient(180deg, #2b231c 0%, #17130f 100%);
+    border: 2px solid #6b533d;
+    color: #cfbda8;
+    padding: 0 8px;
+    border-radius: 6px;
+    font-family: var(--font-title, 'Cinzel', serif);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+    transition: all 0.2s ease;
+  }
+
+  .lang-btn:hover {
+    color: #fff1d0;
+    border-color: #c98838;
+    transform: translateY(-1px);
+  }
+
+  .lang-btn.active {
+    color: #ffffff;
+    border-color: #c98838;
+    background: linear-gradient(180deg, #3d2314 0%, #1c0f08 100%);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.8);
+  }
+
+  @media (max-width: 650px) {
+    .prologue-lang-switch {
+      position: static;
+      width: auto;
+      padding: 8px 0;
+    }
+    .lang-btn {
+      min-width: auto;
+      flex: 1;
+      height: auto;
+      padding: 6px 10px;
     }
   }
 
