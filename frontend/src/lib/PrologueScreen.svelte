@@ -267,13 +267,13 @@
     <div class="prologue-lang-switch">
       <button
         class="lang-btn"
-        class:active={getLang() === 'ru'}
+        class:active={currentLang === 'ru'}
         onclick={() => handleLangChange('ru')}
         title="Русский"
       >RU</button>
       <button
         class="lang-btn"
-        class:active={getLang() === 'en'}
+        class:active={currentLang === 'en'}
         onclick={() => handleLangChange('en')}
         title="English"
       >EN</button>
