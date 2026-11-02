@@ -3,16 +3,10 @@
   import { audioEngine } from './audioEngine.js';
   import { BOSS_QUOTES, getRandomQuote } from './bossQuotes.js';
 
-  export let boss;
-  export let playerScore = 0;
-  export let isRoundOver = false;
-  export let roundOutcome = '';
-  export let isCrit = false;
-  export let isHoveringHit = false;
-  export let isIdleChoked = false;
+  let { boss, playerScore = 0, isRoundOver = false, roundOutcome = '', isCrit = false, isHoveringHit = false, isIdleChoked = false } = $props();
 
-  let prevHP = boss ? boss.currentHp : 0;
-  let isHit = false;
+  let prevHP = $state(boss ? boss.currentHp : 0);
+  let isHit = $state(false);
 
   // Mouse tracking look-at & parallax state
   let targetLookX = 0;
@@ -22,10 +16,10 @@
   let animFrameId = null;
 
   // Speech bubble state
-  let currentQuote = '';
-  let showQuote = false;
+  let currentQuote = $state('');
+  let showQuote = $state(false);
   let quoteTimer = null;
-  let prevPlayerScore = playerScore;
+  let prevPlayerScore = $state(playerScore);
 
   function triggerQuote(quoteText, duration = 3800) {
     if (!quoteText) return;
@@ -38,8 +32,7 @@
   }
 
   // Watch HP change
-  // Watch HP change
-  $: {
+  $effect(() => {
     if (boss && boss.currentHp < prevHP) {
       isHit = true;
       audioEngine.playBossStrike();
@@ -68,10 +61,10 @@
     } else if (boss) {
       prevHP = boss.currentHp;
     }
-  }
+  });
 
   // Watch Player Score changes for trigger lines
-  $: {
+  $effect(() => {
     if (playerScore !== prevPlayerScore) {
       if (playerScore === 21) {
         triggerQuote(getRandomQuote('crit21'), 4200);
@@ -82,14 +75,14 @@
       }
       prevPlayerScore = playerScore;
     }
-  }
+  });
 
   // Watch Idle trigger
-  $: {
+  $effect(() => {
     if (isIdleChoked) {
       triggerQuote(getRandomQuote('idle'), 4000);
     }
-  }
+  });
 
   function handleMouseMove(e) {
     const w = window.innerWidth || 1200;

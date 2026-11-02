@@ -5,29 +5,27 @@
   import VolumeControl from './VolumeControl.svelte';
   import CandleBar from './CandleBar.svelte';
 
-  export let part2;
-  export let playerCandles = 5;
-  export let maxCandles = 5;
+  let { part2, playerCandles = 5, maxCandles = 5 } = $props();
 
   const dispatch = createEventDispatcher();
 
-  let rolling = false;
-  let showRulesDrawer = false;
-  let showRelicsDrawer = false;
-  let showInkModal = false;
-  let selectedDieForInk = 0;
-  let inkTargetFace = 6;
-  let mouseParallaxX = 0;
-  let mouseParallaxY = 0;
-  let isBurningSacrifice = false;
-  let flameTargetingMode = false;
-  let medallionTargetingMode = false;
-  let burningDieIndex = null;
-  let isWitchDying = false;
-  let showBloodTax = false;
-  let prevResolved = false;
+  let rolling = $state(false);
+  let showRulesDrawer = $state(false);
+  let showRelicsDrawer = $state(false);
+  let showInkModal = $state(false);
+  let selectedDieForInk = $state(0);
+  let inkTargetFace = $state(6);
+  let mouseParallaxX = $state(0);
+  let mouseParallaxY = $state(0);
+  let isBurningSacrifice = $state(false);
+  let flameTargetingMode = $state(false);
+  let medallionTargetingMode = $state(false);
+  let burningDieIndex = $state(null);
+  let isWitchDying = $state(false);
+  let showBloodTax = $state(false);
+  let prevResolved = $state(false);
 
-  $: {
+  $effect(() => {
     if (part2 && part2.round_resolved && !prevResolved && part2.round_outcome === 'tie') {
       audioEngine.playBloodPayment();
       showBloodTax = true;
@@ -36,7 +34,7 @@
       }, 2400);
     }
     prevResolved = part2 ? part2.round_resolved : false;
-  }
+  });
 
   onMount(() => {
     audioEngine.playDiceTumble();

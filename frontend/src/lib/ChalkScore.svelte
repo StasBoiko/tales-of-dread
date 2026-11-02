@@ -1,14 +1,12 @@
 <script>
   import { audioEngine } from './audioEngine.js';
 
-  export let score = 0;
-  export let label = 'Очки';
-  export let isObscured = false;
+  let { score = 0, label = 'Очки', isObscured = false } = $props();
 
-  let prevScore = score;
-  let isScratching = false;
+  let prevScore = $state(score);
+  let isScratching = $state(false);
 
-  $: {
+  $effect(() => {
     if (!isObscured && score !== prevScore) {
       isScratching = true;
       audioEngine.playChalkScratch();
@@ -17,7 +15,7 @@
         isScratching = false;
       }, 280);
     }
-  }
+  });
 </script>
 
 <div 

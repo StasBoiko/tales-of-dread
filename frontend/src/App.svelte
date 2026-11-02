@@ -21,7 +21,7 @@
   import BossCompanionAnimal from './lib/BossCompanionAnimal.svelte';
 
   // Game state mirroring backend
-  let state = {
+  let state = $state({
     phase: 'title',
     playerCandles: 5,
     maxCandles: 5,
@@ -46,21 +46,21 @@
     lanternTrapActive: false,
     saltTriggeredInBattle: false,
     peekedCard: null,
-  };
+  });
 
-  let showPrologue = true;
-  let showMobileRules = false;
-  let showMobileInventory = false;
+  let showPrologue = $state(true);
+  let showMobileRules = $state(false);
+  let showMobileInventory = $state(false);
 
-  let isLoading = false;
-  let errorMsg = '';
-  let isIdleChoked = false;
+  let isLoading = $state(false);
+  let errorMsg = $state('');
+  let isIdleChoked = $state(false);
   let idleTimer = null;
-  let screenCracksActive = false;
-  let activeCritShockwave = false;
-  let isHoveringHit = false;
-  let prevRoundOutcome = '';
-  let prevPlayerScore = 0;
+  let screenCracksActive = $state(false);
+  let activeCritShockwave = $state(false);
+  let isHoveringHit = $state(false);
+  let prevRoundOutcome = $state('');
+  let prevPlayerScore = $state(0);
 
   // Inactivity tracking: if idle > 8s, candle chokes and claws appear
   function resetIdleTimer() {
@@ -74,45 +74,45 @@
   }
 
   // Audio & effect synchronization on state updates
-  $: {
+  $effect(() => {
     if (state && state.currentBoss) {
       if (state.phase !== 'title' && state.phase !== 'prologue' && !showPrologue) {
         audioEngine.startPlaylist();
       }
       audioEngine.setDangerState(state.playerScore);
     }
-  }
+  });
 
   // Tinnitus on bust (>21 points)
-  $: {
+  $effect(() => {
     if (state && state.playerScore > 21 && prevPlayerScore <= 21) {
       audioEngine.playTinnitus();
     }
     prevPlayerScore = state ? state.playerScore : 0;
-  }
+  });
 
-  $: {
+  $effect(() => {
     if (state && state.isCrit) {
       activeCritShockwave = true;
       setTimeout(() => {
         activeCritShockwave = false;
       }, 750);
     }
-  }
+  });
 
-  $: {
+  $effect(() => {
     if (state && state.currentBoss && state.currentBoss.id === 'kingdom_of' && state.lastDamageDealt > 0) {
       screenCracksActive = true;
       setTimeout(() => {
         screenCracksActive = false;
       }, 600);
     }
-  }
+  });
 
-  let activeMedallionFlash = false;
-  let medallionBannerVisible = false;
+  let activeMedallionFlash = $state(false);
+  let medallionBannerVisible = $state(false);
 
-  $: {
+  $effect(() => {
     if (state && state.medallionSavedLife) {
       audioEngine.playMedallionSave();
       activeMedallionFlash = true;
@@ -124,7 +124,7 @@
         medallionBannerVisible = false;
       }, 4500);
     }
-  }
+  });
 
   // API calls
   async function fetchAPI(endpoint, method = 'GET', body = null) {

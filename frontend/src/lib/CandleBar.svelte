@@ -2,13 +2,12 @@
   import { onMount } from 'svelte';
   import { audioEngine } from './audioEngine.js';
 
-  export let candles = 5;
-  export let maxCandles = 5;
+  let { candles = 5, maxCandles = 5 } = $props();
 
-  let prevCandles = candles;
-  let isCandleHissing = false;
+  let prevCandles = $state(candles);
+  let isCandleHissing = $state(false);
 
-  $: {
+  $effect(() => {
     if (candles < prevCandles) {
       isCandleHissing = true;
       audioEngine.playCandleHiss();
@@ -16,7 +15,7 @@
     } else if (candles > prevCandles) {
       prevCandles = candles;
     }
-  }
+  });
 </script>
 
 <div class="candle-bar-container" title="Твоя жизненная сила: {candles}/{maxCandles}">
