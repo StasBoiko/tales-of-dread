@@ -13,6 +13,7 @@
     t('prologue.intro3')
   ]);
 
+  let currentLineIndex = 0;
   let displayedText = ['', '', ''];
   let isTyping = true;
   let typeInterval = null;
